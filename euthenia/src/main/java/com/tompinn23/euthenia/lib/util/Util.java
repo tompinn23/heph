@@ -5,9 +5,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tompinn23.euthenia.lib.logistics.fluid.Tank;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.openjdk.nashorn.internal.runtime.options.Option;
 
 import java.text.NumberFormat;
 import java.util.*;
@@ -115,5 +120,13 @@ public class Util {
             throw new JsonSyntaxException("Expected " + key + " to be a Resource location, was '" + text + "'");
         }
         return location;
+    }
+
+    public static <T> Optional<T> getBlockEntityAt(Class<T> clazz, LevelReader level, BlockPos pos) {
+        BlockEntity entity = level.getBlockEntity(pos);
+        if(clazz.isInstance(entity)) {
+            return Optional.of((T)entity);
+        }
+        return Optional.empty();
     }
 }

@@ -46,7 +46,7 @@ public class CableTile extends AbstractTile<IVariant.Single, CableBlock> {
 
 
     public void joinCableNet(CableTile tile, Direction side) {
-        joinCableNet();
+        //joinCableNet();
     }
 
 }

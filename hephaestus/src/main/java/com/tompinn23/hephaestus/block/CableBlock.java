@@ -2,15 +2,18 @@ package com.tompinn23.hephaestus.block;
 
 import com.tompinn23.euthenia.lib.block.AbstractBlock;
 import com.tompinn23.euthenia.lib.registry.IVariant;
+import com.tompinn23.euthenia.lib.util.Util;
 import com.tompinn23.hephaestus.tile.CableTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
@@ -64,9 +67,29 @@ public class CableBlock extends AbstractBlock<IVariant.Single, CableBlock> {
     }
 
     @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        Direction facing = Direction.fromNormal(pos.subtract(fromPos)).getOpposite();
+        boolean val = false;
+        if(level.getBlockEntity(fromPos) instanceof CableTile) {
+            val = true;
+        }
+        switch(facing) {
+            case DOWN -> state = state.setValue(DOWN, val);
+            case UP -> state = state.setValue(UP, val);
+            case NORTH -> state = state.setValue(NORTH, val);
+            case SOUTH -> state = state.setValue(SOUTH, val);
+            case WEST -> state = state.setValue(WEST, val);
+            case EAST -> state = state.setValue(EAST, val);
+        }
+        level.setBlockAndUpdate(pos, state);
     }
 
+    @Override
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
+
+        return state;
+    }
 
     public boolean[] canAttach(BlockState state, Level world, BlockPos pos, Direction direction) {
         return new boolean[]{world.getBlockState(pos.relative(direction)).getBlock() == this || canConnectEnergy(world, pos, direction), canConnectEnergy(world, pos, direction)};
@@ -75,5 +98,11 @@ public class CableBlock extends AbstractBlock<IVariant.Single, CableBlock> {
     public boolean canConnectEnergy(Level world, BlockPos pos, Direction direction) {
         BlockEntity tile = world.getBlockEntity(pos.relative(direction));
         return !(tile instanceof CableTile) && tile != null && tile.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).isPresent();
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);
+        super.createBlockStateDefinition(builder);
     }
 }
