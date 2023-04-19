@@ -9,10 +9,9 @@ pluginManagement {
 }
 
 val minecraftVersion: String by settings
-rootProject.name = "hephaestus-${minecraftVersion}"
+rootProject.name = "hephaestus"
 
 include(
-        "common",
-        "forge",
-        "fabric"
+    "hephaestus",
+    "euthenia"
 )

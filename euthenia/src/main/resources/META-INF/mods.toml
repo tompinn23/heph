@@ -4,32 +4,25 @@ loaderVersion = "[44,)"
 license = "Insert License Here"
 
 [[mods]]
-modId = "hephaestus"
+modId = "euthenia"
 version = "${version}"
-displayName = "Hephaestus"
+displayName = "Euthenia"
 authors = "tompinn23"
 description = '''
 This is an example description! Tell everyone what your mod is about!
 '''
 #logoFile = ""
 
-[[dependencies.hephaestus]]
+[[dependencies.euthenia]]
 modId = "forge"
 mandatory = true
 versionRange = "[44,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.hephaestus]]
+[[dependencies.euthenia]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.19.3,)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.hephaestus]]
-modId = "euthenia"
-mandatory = true
-versionRange = "[1.0.0,)"
 ordering = "NONE"
 side = "BOTH"

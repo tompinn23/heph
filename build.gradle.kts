@@ -1,10 +1,5 @@
-import dev.architectury.plugin.ArchitecturyPlugin
-import java.text.SimpleDateFormat
-import java.util.Date
-
 plugins {
   id("com.diffplug.spotless") version "6.18.0"
-  id("architectury-plugin")
 }
 
 val modId: String by project
@@ -18,9 +13,7 @@ val minecraftVersion: String by project
 val minecraftVersionRange: String by project
 val parchmentDate: String by project
 
-architectury {
-  minecraft = minecraftVersion
-}
+
 
 //  tasks.withType<ProcessResources> {
 //    // this will ensure that this task is redone when the versions change.
