@@ -4,6 +4,7 @@ import com.tompinn23.euthenia.lib.block.AbstractBlock;
 import com.tompinn23.euthenia.lib.registry.IVariant;
 import com.tompinn23.euthenia.lib.util.Util;
 import com.tompinn23.hephaestus.tile.CableTile;
+import com.tompinn23.hephaestus.tile.EnergyCableTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CableBlock extends AbstractBlock<IVariant.Single, CableBlock> {
@@ -37,7 +39,7 @@ public class CableBlock extends AbstractBlock<IVariant.Single, CableBlock> {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CableTile(pos, state);
+        return new EnergyCableTile(pos, state);
     }
 
     public CableBlock(Properties properties, IVariant.Single variant) {
@@ -66,6 +68,20 @@ public class CableBlock extends AbstractBlock<IVariant.Single, CableBlock> {
         return state.setValue(NORTH, north[0] && !north[1]).setValue(SOUTH, south[0] && !south[1]).setValue(WEST, west[0] && !west[1]).setValue(EAST, east[0] && !east[1]).setValue(UP, up[0] && !up[1]).setValue(DOWN, down[0] && !down[1]);
     }
 
+    /**
+     *
+     * @param state
+     * @param level The level
+     * @param pos Block position in level
+     * @param neighbor Block position of neighbor
+     */
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, @NotNull BlockPos pos, BlockPos neighbor) {
+
+    }
+
+
+
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
@@ -83,12 +99,11 @@ public class CableBlock extends AbstractBlock<IVariant.Single, CableBlock> {
             case EAST -> state = state.setValue(EAST, val);
         }
         level.setBlockAndUpdate(pos, state);
-    }
-
-    @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
-
-        return state;
+        Util.getBlockEntityAt(EnergyCableTile.class, level, pos).ifPresent(tile -> {
+            if(tile.inNetwork()) {
+                tile.getNetwork().onNeighbourBlockChanged(pos, facing);
+            }
+        });
     }
 
     public boolean[] canAttach(BlockState state, Level world, BlockPos pos, Direction direction) {

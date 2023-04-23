@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class Tiles {
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Hephaestus.MODID);
 
-    public static final RegistryObject<BlockEntityType<CableTile>> CABLE = TILES.register("cable", () -> BlockEntityType.Builder.of(CableTile::new, Blocks.CABLE.get()).build(null));
+    public static final RegistryObject<BlockEntityType<EnergyCableTile>> CABLE = TILES.register("cable", () -> BlockEntityType.Builder.of(EnergyCableTile::new, Blocks.CABLE.get()).build(null));
 
     public static void init(IEventBus bus) {
         TILES.register(bus);

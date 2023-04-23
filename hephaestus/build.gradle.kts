@@ -1,6 +1,13 @@
+import net.minecraftforge.gradle.common.util.ModConfig
+
 plugins {
   id("maven-publish")
-  id("heph.loom-convention")
+  id("java-library")
+  id("heph.forgegradle-convention")
+}
+
+repositories {
+  maven("https://maven.shedaniel.me/")
 }
 
 val modId: String by extra
@@ -30,18 +37,41 @@ sourceSets {
 }
 
 
-loom {
+//loom {
+//  runs {
+//    create("data") {
+//      data()
+//      programArgs("--all", "--mod", "hephaestus", "--output", generatedResources.absolutePath)
+//    }
+//    getByName("client") {
+//      runDir = "run"
+//      vmArgs("-XX:+AllowEnhancedClassRedefinition")
+//    }
+//  }
+//}
+
+minecraft {
+  accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
+
   runs {
-    create("data") {
-      data()
-      programArgs("--all", "--mod", "hephaestus", "--output", generatedResources.absolutePath)
+    create("client") {
+      workingDirectory = "run"
+      mods {
+        create("euthenia") {
+          source(project(":euthenia").sourceSets.getByName("main"))
+        }
+        create("hephaestus") {
+          source(sourceSets.getByName("main"))
+        }
+      }
     }
   }
 }
 
 dependencies {
-  forge("net.minecraftforge:forge:${forgeVersion}")
-  implementation(project(path = ":euthenia", configuration = "namedElements"))
+  //forge("net.minecraftforge:forge:${forgeVersion}")
+  implementation(project(path = ":euthenia"))
+  api(fg.deobf("me.shedaniel.cloth:cloth-config-forge:9.0.94"))
 }
 
 //

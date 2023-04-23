@@ -12,6 +12,18 @@ public class CableNetworkRegistry {
 
     private HashMap<Level, CableNetworkLevelRegistry> _registries = new HashMap<Level, CableNetworkLevelRegistry>();
 
+
+    public void onNewCable(Level level, ICable<?> part) {
+        CableNetworkLevelRegistry registry;
+        if(this._registries.containsKey(level)) {
+            registry = this._registries.get(level);
+        } else {
+            registry = new CableNetworkLevelRegistry(level);
+            this._registries.put(level, registry);
+        }
+        registry.onPartAdded(part);
+    }
+
     public void onChunkLoaded(LevelAccessor level, ChunkPos pos) {
         if(this._registries.containsKey(level)) {
             this._registries.get(level).onChunkLoaded(pos);
@@ -26,7 +38,22 @@ public class CableNetworkRegistry {
     }
 
     public void tickStart(LevelAccessor level) {
-
+        if(this._registries.containsKey(level)) {
+            final CableNetworkLevelRegistry registry = this._registries.get(level);
+            registry.processNetworkChanges();
+            registry.tickStart();
+        }
     }
 
+    public void addDeadGrid(Level level, CableNetwork cableNetwork) {
+        if(this._registries.containsKey(level)) {
+            this._registries.get(level).addDeadGrid(cableNetwork);
+        }
+    }
+
+    public void addDirtyGrid(Level level, CableNetwork cableNetwork) {
+        if(this._registries.containsKey(level)) {
+            this._registries.get(level).addDirtyGrid(cableNetwork);
+        }
+    }
 }

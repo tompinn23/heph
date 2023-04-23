@@ -2,30 +2,30 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 plugins {
-    id("dev.architectury.loom")
+    id("net.minecraftforge.gradle")
+    id("org.parchmentmc.librarian.forgegradle")
+    id("java")
     id("maven-publish")
 }
 
+val forgeVersion: String by extra
+
 java {
-  toolchain { languageVersion.set(JavaLanguageVersion.of(17)) }
-  withSourcesJar()
+    toolchain { languageVersion.set(JavaLanguageVersion.of(17)) }
+    withSourcesJar()
 }
 
-repositories {
-    maven("https://maven.parchmentmc.org")
-    maven("https://maven.minecraftforge.net/")
-}
+//repositories {
+//    maven("https://maven.parchmentmc.org")
+//    maven("https://maven.minecraftforge.net")
+//}
 
-loom {
-    silentMojangMappingsLicense()
+minecraft {
+    mappings("parchment", "2023.03.12-1.19.3")
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${project.properties["minecraftVersion"]}")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${project.properties["minecraftVersion"]}:${project.properties["parchmentDate"]}")
-    })
+    minecraft("net.minecraftforge:forge:${forgeVersion}")
 }
 
 tasks {
@@ -42,7 +42,6 @@ tasks {
 
     withType<JavaCompile>() {
         options.encoding = "UTF-8"
-
     }
 
     jar {
@@ -61,4 +60,3 @@ tasks {
         }
     }
 }
-

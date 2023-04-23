@@ -1,6 +1,6 @@
 plugins {
     id("maven-publish")
-    id("heph.loom-convention")
+    id("heph.forgegradle-convention")
 }
 
 val modId = "euthenia"
@@ -29,16 +29,20 @@ sourceSets {
     }
 }
 
-
-loom {
-    runs {
-        create("data") {
-            data()
-            programArgs("--all", "--mod", modId, "--output", generatedResources.absolutePath)
-        }
-    }
+minecraft {
+    accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 }
 
-dependencies {
-    forge("net.minecraftforge:forge:${forgeVersion}")
-}
+
+//loom {
+//    runs {
+//        create("data") {
+//            data()
+//            programArgs("--all", "--mod", modId, "--output", generatedResources.absolutePath)
+//        }
+//    }
+//}
+//
+//dependencies {
+//    forge("net.minecraftforge:forge:${forgeVersion}")
+//}
